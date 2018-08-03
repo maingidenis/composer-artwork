@@ -1,0 +1,57 @@
+rule Auctioneer {
+  description: "Allow the auctioneer full access"
+  participant: "org.artwork.auction.Auctioneer"
+  operation: ALL
+  resource: "org.artwork.auction.*"
+  action: ALLOW
+}
+
+rule Bidder {
+  description: "Allow the bidder read access"
+  participant: "org.artwork.auction.Bidder"
+  operation: READ
+  resource: "org.artwork.auction.*"
+  action: ALLOW
+}
+
+rule ArtworkOwner {
+  description: "Allow the owner of an artwork full access"
+  participant(m): "org.artwork.auction.Bidder"
+  operation: ALL
+  resource(v): "org.artwork.auction.Artwork"
+  condition: (v.owner.getIdentifier() == m.getIdentifier())
+  action: ALLOW
+}
+
+rule ArtworkListingOwner {
+  description: "Allow the owner of an artwork total access to their artwork listing"
+  participant(m): "org.artwork.auction.Bidder"
+  operation: ALL
+  resource(v): "org.artwork.auction.ArtworkListing"
+  condition: (v.owner.getIdentifier() == m.getIdentifier())
+  action: ALLOW
+}
+
+rule SystemACL {
+  description: "System ACL to permit all access"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule NetworkAdminUser {
+  description: "Grant business network administrators full access to user resources"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "**"
+  action: ALLOW
+}
+
+rule NetworkAdminSystem {
+  description: "Grant business network administrators full access to system resources"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}

@@ -1,0 +1,50 @@
+
+namespace org.artwork.auction
+
+asset Artwork identified by uid {
+  o String title 
+  o String keywords
+  o String subjects
+  o String styles
+  o String material
+  o String uid
+  --> Bidder owner
+}
+
+enum ListingState {
+  o FOR_SALE
+  o RESERVE_NOT_MET
+  o SOLD
+}
+
+asset ArtworkListing identified by listingId {
+  o String listingId
+  o Double reservePrice
+  o String description
+  o ListingState state
+  o Offer[] offers optional
+  --> Artwork artwork
+}
+
+abstract participant User identified by email{
+  o String email
+  o String firstName
+  o String lastName
+}
+
+participant Bidder extends User {
+  o Double balance
+}
+
+participant Auctioneer extends User {
+}
+
+transaction Offer {
+  o Double bidPrice
+  --> ArtworkListing listing
+  --> Bidder bidder
+}
+
+transaction CloseBidding {
+  --> ArtworkListing listing
+}
